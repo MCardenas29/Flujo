@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flujo_mx/consts/quotas.dart';
 import 'package:flujo_mx/providers/random_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,7 +7,6 @@ import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
-  final double quantity = 0;
 
   Widget bottomTitles(double value, TitleMeta meta) {
     final titles = <String>['B', 'IL', 'IM', 'IH', 'H', 'S'];
@@ -17,17 +17,25 @@ class Home extends StatelessWidget {
     );
   }
 
-  List<BarChartGroupData> generateRods() {
-    List<BarChartGroupData> groups;
+  List<BarChartGroupData> generateRods(WaterProvider prov) {
+    List<BarChartGroupData> groups = [];
+    var used = prov.waterUsed;
+    for (var q in def) {
+      bool isFull = used >= q.quota;
+      var y = isFull? q.quota : used;
+      if (isFull) used - q.quota;
+      groups.add(
+        BarChartGroupData(x: 0, barRods: [
+          BarChartRodData(
+            toY: y,
+            color: q.color,
+            width: 40,
+            borderRadius: BorderRadius.zero,
+          )
+        ])
+      );
+    }
 
-    // BarChartGroupData(x: 0, barRods: [
-    //   BarChartRodData(
-    //     toY: 14,
-    //     color: Colors.red,
-    //     width: 40,
-    //     borderRadius: BorderRadius.zero,
-    //   )
-    // ])
     return groups;
   }
 
@@ -40,8 +48,8 @@ class Home extends StatelessWidget {
           margin: const EdgeInsets.all(20),
           child: AspectRatio(
             aspectRatio: 1.5,
-            child: ChangeNotifierProvider(
-              value: WaterProvider,
+            child: ChangeNotifierProvider.value(
+              value: WaterProvider(),
               child: BarChart(BarChartData(
                   maxY: 20,
                   borderData: FlBorderData(show: false),
@@ -61,7 +69,7 @@ class Home extends StatelessWidget {
                               getTitlesWidget: bottomTitles,
                               reservedSize: 40))),
                   gridData: const FlGridData(show: false),
-                  barGroups: generateRods()
+                  barGroups: generateRods(context.read<WaterProvider>())
               )),
             )
           ),
@@ -70,3 +78,4 @@ class Home extends StatelessWidget {
     );
   }
 }
+
