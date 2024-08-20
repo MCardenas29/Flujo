@@ -6,15 +6,16 @@ import 'package:flutter/material.dart';
 
 class WaterProvider extends ChangeNotifier {
   static final WaterProvider _singleton = WaterProvider._internal();
-  double waterUsed;
-  double lastUsage;
+  double waterUsed = 0;
+  double lastUsage = 0;
+  List<double> usages = [];
 
   factory WaterProvider() => _singleton;
 
-  WaterProvider._internal({this.waterUsed = 0, this.lastUsage = 0}) {
+  WaterProvider._internal() {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       var source = Random();
-      var q = source.nextDouble() * 10.0;
+      var q = source.nextDouble() * 4.0;
       addWater(quantity: q);
     });
   }
@@ -23,6 +24,7 @@ class WaterProvider extends ChangeNotifier {
   void addWater({ required double quantity }) async {
     lastUsage = quantity;
     waterUsed += quantity;
+    usages.add(quantity);
     notifyListeners();
   }
 }
