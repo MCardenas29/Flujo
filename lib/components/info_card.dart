@@ -28,7 +28,7 @@ class InfoCard extends StatelessWidget {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   const Icon(Icons.water_drop_outlined),
-                  Text(provider.waterUsed.toStringAsFixed(2))
+                  Text(formatter.format(provider.waterUsed), style: theme.textTheme.bodyLarge)
                 ]),
             Text("\$ ${formatter.format(price)}",
                 style: theme.textTheme.displaySmall),

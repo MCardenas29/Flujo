@@ -2,13 +2,15 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flujo_mx/models/usage.dart';
 import 'package:flutter/material.dart';
 
 class WaterProvider extends ChangeNotifier {
   static final WaterProvider _singleton = WaterProvider._internal();
   double waterUsed = 0;
-  double lastUsage = 0;
-  List<double> usages = [];
+  Usage? lastUsage;
+  List<Usage> usages = [];
+
 
   factory WaterProvider() => _singleton;
 
@@ -22,9 +24,11 @@ class WaterProvider extends ChangeNotifier {
 
 
   void addWater({ required double quantity }) async {
-    lastUsage = quantity;
+    var u = Usage(quantity, DateTime.now());
+    lastUsage = u;
+    usages.add(u);
     waterUsed += quantity;
-    usages.add(quantity);
     notifyListeners();
   }
+
 }

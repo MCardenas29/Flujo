@@ -17,15 +17,17 @@ class _StopCockState extends State<StopCock>
   void initState() {
     super.initState();
     controller =
-        AnimationController(duration: const Duration(seconds: 2), vsync: this);
-    animation = Tween<double>(begin: 0, end: 1).animate(controller);
+        AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    animation = Tween<double>(begin: 0, end: 1/4).animate(controller);
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          controller.forward();
+          controller.isForwardOrCompleted
+              ? controller.reverse()
+              : controller.forward();
         },
         behavior: HitTestBehavior.translucent,
         child: Container(

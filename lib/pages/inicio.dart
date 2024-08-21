@@ -5,7 +5,6 @@ import 'package:flujo_mx/consts/quotas.dart';
 import 'package:flujo_mx/providers/random_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -15,8 +14,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Expanded(
-            child: Column(
+        const Expanded(child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
