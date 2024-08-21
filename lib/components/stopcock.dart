@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class StopCock extends StatefulWidget {
@@ -9,29 +8,43 @@ class StopCock extends StatefulWidget {
   State<StopCock> createState() => _StopCockState();
 }
 
-class _StopCockState extends State<StopCock> {
+class _StopCockState extends State<StopCock>
+    with SingleTickerProviderStateMixin {
+  late Animation<double> animation;
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    animation = Tween<double>(begin: 0, end: 1).animate(controller);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          controller.forward();
+        },
+        behavior: HitTestBehavior.translucent,
         child: Container(
           margin: const EdgeInsets.all(10.0),
           alignment: Alignment.centerLeft,
-          width: 130,
-          height: 130,
-          color: Colors.red,
           child: Stack(
-            fit: StackFit.expand,
             alignment: Alignment.center,
             children: [
-              SizedBox(
-                child: SvgPicture.asset(
-                  "assets/pipe.svg",
-                ),
+              SvgPicture.asset(
+                "assets/pipe.svg",
+                height: 110,
+                width: 110,
               ),
-              SizedBox(
+              RotationTransition(
+                turns: animation,
                 child: SvgPicture.asset(
                   "assets/handle.svg",
+                  height: 120,
+                  width: 120,
                 ),
               ),
             ],

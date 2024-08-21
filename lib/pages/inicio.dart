@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flujo_mx/components/info_card.dart';
 import 'package:flujo_mx/components/stopcock.dart';
 import 'package:flujo_mx/consts/quotas.dart';
 import 'package:flujo_mx/providers/random_provider.dart';
@@ -13,29 +14,31 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Expanded(child: Column(
+        const Expanded(
+            child: Column(
           children: [
-            StopCock()
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [StopCock(), InfoCard()],
+            ),
           ],
         )),
         ClipRect(
           child: Container(
             margin: const EdgeInsets.all(20),
-            child: AspectRatio(
-                aspectRatio: 1.5,
-                child: ChangeNotifierProvider.value(
-                  value: WaterProvider(),
-                  child: const UsageBar(),
-                )),
+            child: const AspectRatio(
+              aspectRatio: 1.5,
+              child: UsageBar(),
+            ),
           ),
         )
       ],
     );
   }
 }
+
 class UsageBar extends StatelessWidget {
   const UsageBar({super.key});
 
@@ -53,15 +56,13 @@ class UsageBar extends StatelessWidget {
     var used = prov.waterUsed;
     for (int i = 0; i < def.length; i++) {
       var q = def[i];
-      double y = 0;
+      double y = used >= q.quota
+          ? q.quota
+          : used > 0
+              ? used
+              : 0;
+      used -= q.quota;
 
-      if (used >= q.quota) {
-        y = q.quota;
-        used -= q.quota;
-      } else if (used > 0) {
-        y = used;
-        used -= q.quota;
-      }
       groups.add(BarChartGroupData(x: i, barRods: [
         BarChartRodData(
           toY: y,
